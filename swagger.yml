@@ -1,0 +1,2772 @@
+---
+swagger: '2.0'
+
+info:
+  description: |
+    This is a documentation for **[qredit-node](https://github.com/HodlerCompany/qredit-full-node)** built with Swagger UI to make testing a breeze. If you find any issues, come over to **[HodlerCompany/qredit-node-test-api](https://github.com/HodlerCompany/qredit-node-test-api)** to open an issue, or even better, send a PR that fixes the issue.
+
+    The **Community SSL Public API** used as test host is provided from **[qredit.io](https://www.qredit.io/)**.
+    
+  version: 1.0.0
+  title: Qredit Node Documentation
+
+host: api.qredit.cloud
+
+basePath: "/"
+
+schemes:
+  - http
+
+produces:
+  - application/json
+
+tags:
+  - name: Account
+    description: 'Operations for Accounts'
+  - name: Block
+    description: 'Operations for Blocks'
+  - name: Delegate
+    description: 'Operations for Delegates'
+  - name: Loader
+    description: 'Operations for Loaders'
+  - name: MultiSignature
+    description: 'Operations for Multi-Signatures'
+  - name: Peer
+    description: 'Operations for Peers'
+  - name: Signature
+    description: 'Operations for Signatures'
+  - name: Transaction
+    description: 'Operations for Transactions'
+  - name: Transport
+    description: 'Operations for Transports'
+
+parameters:
+  ipHeader:
+    name: ip
+    in: header
+    type: string
+    description: 'A valid server IP.'
+
+  portHeader:
+    name: port
+    in: header
+    type: integer
+    description: 'A valid server port.'
+    default: 4100
+    required: true
+    minLength: 1
+    maxLength: 65535
+
+  osHeader:
+    name: os
+    in: header
+    type: string
+    description: 'A valid operating system.'
+    maxLength: 64
+
+  nethashHeader:
+    name: nethash
+    in: header
+    type: string
+    description: 'A valid qredit-node nethash.'
+    default: 5e67037fd290ba7ab378e84a591d251c46eb9770eb134983771fd602233bf193
+    required: true
+    maxLength: 64
+
+  versionHeader:
+    name: version
+    in: header
+    type: string
+    description: 'A valid qredit-node version.'
+    default: 0.3.0
+    required: true
+    maxLength: 11
+
+x-globalParameters: &REQUIRED_HEADERS
+  - $ref: '#/parameters/nethashHeader'
+  - $ref: '#/parameters/versionHeader'
+  - $ref: '#/parameters/portHeader'
+
+paths:
+  "/api/accounts/getBalance":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Get the balance of an account'
+      operationId: accounts.getBalance
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetBalanceResponse'
+  "/api/accounts/getPublickey":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Get the public key of an account'
+      operationId: accounts.getPublickey
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetPublickeyResponse'
+  "/api/accounts/delegates/fee":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Get the delegate fee of an account'
+      operationId: accounts.getDelegatesFee
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetDelegatesFeeResponse'
+  "/api/accounts/delegates":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Get the delegates of an account'
+      operationId: accounts.getDelegates
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+        - in: query
+          type: string
+          name: orderBy
+          description: 'A string that specifies the column by which to sort the records.'
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetDelegatesResponse'
+    put:
+      deprecated: true
+      tags:
+        - Account
+      summary: 'Vote for a Delegate by Public Key'
+      operationId: accounts.addDelegates
+      parameters:
+        - in: body
+          name: body
+          description: ''
+          required: true
+          schema:
+            $ref: '#/definitions/AccountsAddDelegatesRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsAddDelegatesResponse'
+  "/api/accounts":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Returns account information of an address'
+      operationId: accounts.getAccount
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetAccountResponse'
+  "/api/accounts/getAllAccounts":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      deprecated: true
+      tags:
+        - Account
+      summary: 'Get a list of accounts'
+      operationId: accounts.getAllAccounts
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsGetAllAccountsResponse'
+  "/api/accounts/top":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Account
+      summary: 'Get a list of top accounts'
+      operationId: accounts.top
+      parameters:
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsTopResponse'
+  "/api/accounts/count":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      deprecated: true
+      tags:
+        - Account
+      summary: 'Get the count of accounts'
+      operationId: accounts.count
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountsCountResponse'
+  "/api/blocks/get":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get block by id'
+      operationId: blocks.getBlock
+      parameters:
+        - in: query
+          type: string
+          name: id
+          description: ''
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetBlockResponse'
+  "/api/blocks":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get all blocks'
+      operationId: blocks.getBlocks
+      parameters:
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: string
+          name: orderBy
+          description: 'A string that specifies the column by which to sort the records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+        - in: query
+          type: string
+          name: generatorPublicKey
+          description: 'A valid Qredit Public Key.'
+        - in: query
+          type: integer
+          name: totalAmount
+          description: ''
+        - in: query
+          type: integer
+          name: totalFee
+          description: ''
+        - in: query
+          type: integer
+          name: reward
+          description: ''
+        - in: query
+          type: string
+          name: previousBlock
+          description: ''
+        - in: query
+          type: integer
+          name: height
+          description: ''
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetBlocksResponse'
+  "/api/blocks/getEpoch":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain epoch'
+      operationId: blocks.getEpoch
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetEpochResponse'
+  "/api/blocks/getHeight":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain height'
+      operationId: blocks.getHeight
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetHeightResponse'
+  "/api/blocks/getNethash":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain nethash'
+      operationId: blocks.getNethash
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetNethashResponse'
+  "/api/blocks/getFee":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the transaction fee for sending "normal" transactions'
+      operationId: blocks.getFee
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetFeeResponse'
+  "/api/blocks/getFees":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the network fees'
+      operationId: blocks.getFees
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetFeesResponse'
+  "/api/blocks/getMilestone":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain milestone'
+      operationId: blocks.getMilestone
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetMilestoneResponse'
+  "/api/blocks/getReward":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain reward'
+      operationId: blocks.getReward
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetRewardResponse'
+  "/api/blocks/getSupply":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain supply'
+      operationId: blocks.getSupply
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetSupplyResponse'
+  "/api/blocks/getStatus":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Block
+      summary: 'Get the blockchain status'
+      operationId: blocks.getStatus
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BlocksGetStatusResponse'
+  "/api/delegates/count":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get the count of delegates'
+      operationId: delegates.count
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesCountResponse'
+  "/api/delegates/search":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Search for specific delegates'
+      operationId: delegates.search
+      parameters:
+        - in: query
+          type: string
+          name: q
+          description: 'A search query.'
+          required: true
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesSearchResponse'
+  "/api/delegates/voters":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get a list of voters for a delegate'
+      operationId: delegates.getVoters
+      parameters:
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetVotersResponse'
+  "/api/delegates/get":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get a single delegate'
+      operationId: delegates.getDelegate
+      parameters:
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+        - in: query
+          type: string
+          name: username
+          description: 'A valid Qredit Delegate username.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetDelegateResponse'
+  "/api/delegates":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get all delegates'
+      operationId: delegates.getDelegates
+      parameters:
+        - in: query
+          type: string
+          name: orderBy
+          description: 'A string that specifies the column by which to sort the records.'
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetDelegatesResponse'
+    put:
+      deprecated: true
+      tags:
+        - Delegate
+      summary: 'Create a new delegate'
+      operationId: delegates.addDelegate
+      parameters:
+        - in: body
+          name: body
+          description: 'A valid Qredit delegate object.'
+          required: true
+          schema:
+            $ref: '#/definitions/DelegatesAddDelegateRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesAddDelegateResponse'
+  "/api/delegates/fee":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get the delegate fee'
+      operationId: delegates.getFee
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetFeeResponse'
+  "/api/delegates/forging/getForgedByAccount":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get the amount of Qredits forged by an account'
+      operationId: delegates.getForgedByAccount
+      parameters:
+        - in: query
+          type: string
+          name: generatorPublicKey
+          description: ''
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetForgedByAccountResponse'
+  "/api/delegates/getNextForgers":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Delegate
+      summary: 'Get the next forger'
+      operationId: delegates.getNextForgers
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesGetNextForgersResponse'
+  "/api/delegates/forging/enable":
+    parameters: *REQUIRED_HEADERS
+
+    post:
+      deprecated: true
+      tags:
+        - Delegate
+      summary: 'Enable forging for a delegate'
+      operationId: delegates.enableForging
+      parameters:
+        - in: query
+          type: string
+          name: secret
+          description: 'A valid Qredit Passphrase.'
+          required: true
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesEnableForgingResponse'
+  "/api/delegates/forging/disable":
+    parameters: *REQUIRED_HEADERS
+
+    post:
+      deprecated: true
+      tags:
+        - Delegate
+      summary: 'Disable forging for a delegate'
+      operationId: delegates.disableForging
+      parameters:
+        - in: query
+          type: string
+          name: secret
+          description: 'A valid Qredit Passphrase.'
+          required: true
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/DelegatesDisableForgingResponse'
+  "/api/loader/status":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Loader
+      summary: 'Get the blockchain status'
+      operationId: loader.status
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LoaderStatusResponse'
+  "/api/loader/status/sync":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Loader
+      summary: 'Get the synchronisation status of the client'
+      operationId: loader.sync
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LoaderSyncResponse'
+  "/api/loader/autoconfigure":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Loader
+      summary: 'Auto-configure the client loader'
+      operationId: loader.autoconfigure
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LoaderAutoconfigureResponse'
+  "/api/multisignatures/pending":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - MultiSignature
+      summary: 'Get pending multi signature transactions'
+      operationId: multisignatures.pending
+      parameters:
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/MultisignaturesPendingResponse'
+  "/api/multisignatures/sign":
+    parameters: *REQUIRED_HEADERS
+
+    post:
+      deprecated: true
+      tags:
+        - MultiSignature
+      summary: 'Sign a new multi signature'
+      operationId: multisignatures.sign
+      parameters:
+        - in: query
+          type: string
+          name: secret
+          description: 'A valid Qredit Passphrase.'
+          required: true
+        - in: query
+          type: string
+          name: secondSecret
+          description: 'A valid secondary Qredit Passphrase.'
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+        - in: query
+          type: string
+          name: transactionId
+          description: 'A valid transaction ID.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/MultisignaturesSignResponse'
+  "/api/multisignatures":
+    parameters: *REQUIRED_HEADERS
+
+    put:
+      deprecated: true
+      tags:
+        - MultiSignature
+      summary: 'Create a new multi signature'
+      operationId: multisignatures.addMultisignature
+      parameters:
+        - in: body
+          name: body
+          description: 'A valid multi signature object.'
+          required: true
+          schema:
+            $ref: '#/definitions/MultisignaturesAddMultisignatureRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/MultisignaturesAddMultisignatureResponse'
+  "/api/multisignatures/accounts":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - MultiSignature
+      summary: 'Get a list of accounts'
+      operationId: multisignature.getAccounts
+      parameters:
+        - in: query
+          type: string
+          name: publicKey
+          description: 'A valid Qredit Public Key.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/MultisignatureGetAccountsResponse'
+  "/api/peers/get":
+    get:
+      tags:
+        - Peer
+      summary: 'Get a single peer'
+      operationId: peers.getPeer
+      parameters:
+        - $ref: '#/parameters/nethashHeader'
+        - $ref: '#/parameters/versionHeader'
+        - in: query
+          type: string
+          name: ip
+          description: 'A valid server IP.'
+          required: true
+        - in: query
+          type: integer
+          name: port
+          description: 'A valid server Port.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PeersGetPeerResponse'
+  "/api/peers":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Peer
+      summary: 'Get all peers'
+      operationId: peers.getPeers
+      parameters:
+        - in: query
+          type: integer
+          name: port
+          description: 'A valid server port.'
+        - in: query
+          type: integer
+          name: state
+          description: 'An unsigned integer that specifies the peer state.'
+        - in: query
+          type: string
+          name: os
+          description: 'A valid operating system.'
+        - in: query
+          type: string
+          name: version
+          description: 'A valid qredit-node version.'
+        - in: query
+          type: string
+          name: orderBy
+          description: 'A string that specifies the column by which to sort the records.'
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PeersGetPeersResponse'
+  "/api/peers/version":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Peer
+      summary: 'Get the peer version'
+      operationId: peers.version
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PeersVersionResponse'
+  "/api/signatures/fee":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Signature
+      summary: 'Get the fee for a signature'
+      operationId: signatures.fee
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SignaturesFeeResponse'
+  "/api/signatures":
+    parameters: *REQUIRED_HEADERS
+
+    put:
+      deprecated: true
+      tags:
+        - Signature
+      summary: 'Create a new signature'
+      operationId: signatures.addSignature
+      parameters:
+        - in: body
+          name: body
+          description: 'A valid signature object.'
+          required: true
+          schema:
+            $ref: '#/definitions/SignaturesAddSignatureRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SignaturesAddSignatureResponse'
+  "/api/transactions/get":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transaction
+      summary: 'Get a single transaction'
+      operationId: transactions.getTransaction
+      parameters:
+        - in: query
+          type: string
+          name: id
+          description: 'A valid transaction ID.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransactionsGetTransactionResponse'
+  "/api/transactions":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transaction
+      summary: 'Get all transactions'
+      operationId: transactions.getTransactions
+      parameters:
+        - in: query
+          type: string
+          name: blockId
+          description: 'An unsigned integer that specifies the block ID.'
+        - in: query
+          type: integer
+          name: limit
+          description: 'An unsigned integer that specifies the maximum number of records.'
+        - in: query
+          type: integer
+          name: type
+          description: 'An unsigned integer that specifies the transaction type.'
+        - in: query
+          type: string
+          name: orderBy
+          description: 'A string that specifies the column by which to sort the records.'
+        - in: query
+          type: integer
+          name: offset
+          description: 'An unsigned integer that specified the number of records to skip.'
+        - in: query
+          type: string
+          name: senderPublicKey
+          description: 'A valid Qredit Public Key.'
+        - in: query
+          type: string
+          name: vendorField
+          description: 'A string that specifies the SmartBridge used.'
+        - in: query
+          type: string
+          name: ownerPublicKey
+          description: 'A valid Qredit Address.'
+        - in: query
+          type: string
+          name: ownerAddress
+          description: 'A valid Qredit Address.'
+        - in: query
+          type: string
+          name: senderId
+          description: 'A valid Qredit Address.'
+        - in: query
+          type: string
+          name: recipientId
+          description: 'A valid Qredit Address.'
+        - in: query
+          type: integer
+          name: amount
+          description: 'An unsigned integer that specifies the transaction amount.'
+        - in: query
+          type: integer
+          name: fee
+          description: 'An unsigned integer that specifies the transaction fee.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransactionsGetTransactionsResponse'
+    put:
+      deprecated: true
+      tags:
+        - Transaction
+      summary: 'Create a new transaction'
+      operationId: transactions.addTransactions
+      parameters:
+        - in: body
+          name: body
+          description: 'A valid transaction object.'
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionsAddTransactionsRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransactionsAddTransactionsResponse'
+  "/api/transactions/unconfirmed/get":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transaction
+      summary: 'Get a single unconfirmed transaction'
+      operationId: transactions.getUnconfirmedTransaction
+      parameters:
+        - in: query
+          type: string
+          name: id
+          description: 'A valid unconfirmed transaction ID.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransactionsGetUnconfirmedTransactionResponse'
+  "/api/transactions/unconfirmed":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transaction
+      summary: 'Get all unconfirmed transactions'
+      operationId: transactions.getUnconfirmedTransactions
+      parameters:
+        - in: query
+          type: string
+          name: senderPublicKey
+          description: 'A valid Qredit Public Key.'
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransactionsGetUnconfirmedTransactionsResponse'
+  "/peer/list":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get a list of peers'
+      operationId: transport.listBroadcastPeers
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportListBroadcastPeersResponse'
+  "/peer/blocks/common":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get a list of blocks by ids'
+      operationId: transport.commonBlock
+      parameters:
+        - in: query
+          type: string
+          name: ids
+          description: 'A list of block IDs.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportCommonBlockResponse'
+  "/peer/block":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get a single block'
+      operationId: transport.getBlock
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportGetBlockResponse'
+  "/peer/blocks":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get all blocks'
+      operationId: transport.getBlocks
+      parameters:
+        - in: query
+          type: string
+          name: address
+          description: 'A valid Qredit Address.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportGetBlocksResponse'
+  "/peer/transactions":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      description: 'Get all transactions'
+      operationId: transport.getTransactions
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportGetTransactionsResponse'
+    post:
+      tags:
+        - Transport
+      summary: 'Create a new transaction'
+      operationId: transport.addTransactions
+      parameters:
+        - in: body
+          name: transactions
+          description: 'A valid transaction object.'
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TransportAddTransactionsRequest'
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportAddTransactionsResponse'
+  "/peer/transactionsFromIds":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get a list of transactions by ids'
+      operationId: transport.transactionsFromIds
+      parameters:
+        - in: query
+          type: string
+          name: ids
+          description: 'A list of transaction IDs.'
+          required: true
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportTransactionsFromIdsResponse'
+  "/peer/height":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get the blockchain height'
+      operationId: transport.height
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportHeightResponse'
+  "/peer/status":
+    parameters: *REQUIRED_HEADERS
+
+    get:
+      tags:
+        - Transport
+      summary: 'Get the blockchain status'
+      operationId: transport.status
+      parameters:
+      responses:
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransportStatusResponse'
+
+definitions:
+
+####################################################################################################
+## Request Object Definitions ######################################################################
+####################################################################################################
+
+  # AccountsGetBalanceRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsGetPublickeyRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsGetDelegatesFeeRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsGetDelegatesRequest:
+  #   type: object
+  #   properties: {}
+
+  AccountsAddDelegatesRequest:
+    type: object
+    required:
+      - secret
+      - publicKey
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+
+  # AccountsGetAccountRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsGetAllAccountsRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsTopRequest:
+  #   type: object
+  #   properties: {}
+
+  # AccountsCountRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetBlockRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetBlocksRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetEpochRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetHeightRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetNethashRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetFeeRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetFeesRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetMilestoneRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetRewardRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetSupplyRequest:
+  #   type: object
+  #   properties: {}
+
+  # BlocksGetStatusRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesCountRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesSearchRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesGetVotersRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesGetDelegateRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesGetDelegatesRequest:
+  #   type: object
+  #   properties: {}
+
+  DelegatesAddDelegateRequest:
+    type: object
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+      username:
+        type: string
+        description: 'A valid Qredit Delegate username.'
+
+  # DelegatesGetFeeRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesGetForgedByAccountRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesGetNextForgersRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesEnableForgingRequest:
+  #   type: object
+  #   properties: {}
+
+  # DelegatesDisableForgingRequest:
+  #   type: object
+  #   properties: {}
+
+  # LoaderStatusRequest:
+  #   type: object
+  #   properties: {}
+
+  # LoaderSyncRequest:
+  #   type: object
+  #   properties: {}
+
+  # LoaderAutoconfigureRequest:
+  #   type: object
+  #   properties: {}
+
+  # MultisignaturesPendingRequest:
+  #   type: object
+  #   properties: {}
+
+  # MultisignaturesSignRequest:
+  #   type: object
+  #   properties: {}
+
+  MultisignaturesAddMultisignatureRequest:
+    type: object
+    required:
+      - secret
+      - min
+      - lifetime
+      - keysgroup
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+      min:
+        type: string
+        description: ''
+      lifetime:
+        type: string
+        description: 'An unsigned integer that specifies the lifetime.'
+      keysgroup:
+        type: array
+        description: 'A list of public keys.'
+        items:
+          type: string
+
+  # MultisignatureGetAccountsRequest:
+  #   type: object
+  #   properties: {}
+
+  # PeersGetPeerRequest:
+  #   type: object
+  #   properties: {}
+
+  # PeersGetPeersRequest:
+  #   type: object
+  #   properties: {}
+
+  # PeersVersionRequest:
+  #   type: object
+  #   properties: {}
+
+  # SignaturesFeeRequest:
+  #   type: object
+  #   properties: {}
+
+  SignaturesAddSignatureRequest:
+    type: object
+    required:
+      - secret
+      - secondSecret
+      - publicKey
+      - multisigAccountPublicKey
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      multisigAccountPublicKey:
+        type: string
+        description: 'A valid multi signature Qredit Public Key.'
+
+  # TransactionsGetTransactionRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransactionsGetTransactionsRequest:
+  #   type: object
+  #   properties: {}
+
+  TransactionsAddTransactionsRequest:
+    type: object
+    required:
+      - secret
+      - amount
+      - recipientId
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      amount:
+        type: integer
+        description: 'An amount as unsigned integer.'
+      recipientId:
+        type: string
+        description: 'A valid Qredit Address.'
+      vendorField:
+        type: string
+        description: 'A string that will be used as SmartBridge.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+      multisigAccountPublicKey:
+        type: string
+        description: 'A valid multi signature Qredit Public Key.'
+
+  # TransactionsGetUnconfirmedTransactionRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransactionsGetUnconfirmedTransactionsRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportListBroadcastPeersRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportCommonBlockRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportGetBlockRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportGetBlocksRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportGetTransactionsRequest:
+  #   type: object
+  #   properties: {}
+
+  TransportAddTransactionsRequest:
+    type: object
+    required:
+      - transactions
+    properties:
+      transactions:
+        type: array
+        description: 'A transaction object that should be processed.'
+
+  # TransportTransactionsFromIdsRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportHeightRequest:
+  #   type: object
+  #   properties: {}
+
+  # TransportStatusRequest:
+  #   type: object
+  #   properties: {}
+
+####################################################################################################
+## Response Object Definitions #####################################################################
+####################################################################################################
+
+  AccountsGetBalanceResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      balance:
+        type: integer
+        description: ''
+      unconfirmedBalance:
+        type: integer
+        description: ''
+
+  AccountsGetPublickeyResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+
+  AccountsGetDelegatesFeeResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      fee:
+        type: integer
+        description: ''
+
+  AccountsGetDelegatesResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      delegates:
+        type: array
+        items:
+          $ref: '#/definitions/Delegate'
+
+  AccountsAddDelegatesResponse:
+    type: object
+    properties:
+      secret:
+        type: string
+        description: 'A valid Qredit Passphrase.'
+      publicKey:
+        type: string
+        description: 'A valid Qredit Public Key.'
+      secondSecret:
+        type: string
+        description: 'A valid secondary Qredit Passphrase.'
+
+  AccountsGetAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      account:
+        type: array
+        items:
+          $ref: '#/definitions/Account'
+
+  AccountsGetAllAccountsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  AccountsTopResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      accounts:
+        type: array
+        items:
+          $ref: '#/definitions/TopAccount'
+
+  AccountsCountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      block:
+        type: boolean
+        description: ''
+        items:
+          $ref: '#/definitions/Block'
+
+  BlocksGetBlockResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      block:
+        type: array
+        $ref: '#/definitions/Block'
+
+  BlocksGetBlocksResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      blocks:
+        type: array
+        items:
+          $ref: '#/definitions/Block'
+
+  BlocksGetEpochResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      epoch:
+        type: string
+        description: ''
+
+  BlocksGetHeightResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      height:
+        type: integer
+        description: ''
+      id:
+        type: integer
+        description: ''
+
+  BlocksGetNethashResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      nethash:
+        type: string
+        description: ''
+
+  BlocksGetFeeResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      fee:
+        type: integer
+        description: ''
+
+  BlocksGetFeesResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      send:
+        type: integer
+        description: ''
+      vote:
+        type: integer
+        description: ''
+      secondsignature:
+        type: integer
+        description: ''
+      delegate:
+        type: integer
+        description: ''
+      multisignature:
+        type: integer
+        description: ''
+
+  BlocksGetMilestoneResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      milestone:
+        type: integer
+        description: ''
+
+  BlocksGetRewardResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      reward:
+        type: integer
+        description: ''
+
+  BlocksGetSupplyResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      supply:
+        type: integer
+        description: ''
+
+  BlocksGetStatusResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      epoch:
+        type: string
+        description: ''
+      height:
+        type: integer
+        description: ''
+      fee:
+        type: integer
+        description: ''
+      milestone:
+        type: integer
+        description: ''
+      nethash:
+        type: string
+        description: ''
+      reward:
+        type: integer
+        description: ''
+      supply:
+        type: integer
+        description: ''
+
+  DelegatesCountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      count:
+        type: integer
+        description: ''
+
+  DelegatesSearchResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      delegates:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/DelegateSearchResult'
+
+  DelegatesGetVotersResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      accounts:
+        type: boolean
+        description: ''
+        items:
+          $ref: '#/definitions/Voter'
+
+  DelegatesGetDelegateResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      delegate:
+        type: array
+        description: ''
+        $ref: '#/definitions/Voter'
+
+  DelegatesGetDelegatesResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      delegates:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/Delegate'
+
+  DelegatesAddDelegateResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  DelegatesGetFeeResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      fee:
+        type: integer
+        description: ''
+
+  DelegatesGetForgedByAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      fees:
+        type: integer
+        description: ''
+      rewards:
+        type: integer
+        description: ''
+      forged:
+        type: integer
+        description: ''
+
+  DelegatesGetNextForgersResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      currentBlock:
+        type: integer
+        description: ''
+      currentSlot:
+        type: integer
+        description: ''
+      delegates:
+        type: array
+        description: ''
+        items:
+          type: string
+          description: ''
+
+  DelegatesEnableForgingResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  DelegatesDisableForgingResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  LoaderStatusResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      loaded:
+        type: boolean
+        description: ''
+      now:
+        type: integer
+        description: ''
+      blocksCount:
+        type: integer
+        description: ''
+
+  LoaderSyncResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      syncing:
+        type: boolean
+        description: ''
+      blocks:
+        type: number
+        description: ''
+      height:
+        type: integer
+        description: ''
+      id:
+        type: integer
+        description: ''
+
+  LoaderAutoconfigureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      network:
+        type: array
+        description: ''
+        $ref: '#/definitions/Network'
+
+  MultisignaturesPendingResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  MultisignaturesSignResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  MultisignaturesAddMultisignatureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  MultisignatureGetAccountsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  PeersGetPeerResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      peer:
+        type: boolean
+        description: ''
+        $ref: '#/definitions/Peer'
+
+  PeersGetPeersResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      peers:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/Peer'
+
+  PeersVersionResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      version:
+        type: string
+        description: ''
+      build:
+        type: string
+        description: ''
+
+  SignaturesFeeResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      fee:
+        type: integer
+        description: ''
+
+  SignaturesAddSignatureResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransactionsGetTransactionResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      transaction:
+        type: array
+        description: ''
+        $ref: '#/definitions/Transaction'
+
+  TransactionsGetTransactionsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      transactions:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/Transaction'
+
+  TransactionsAddTransactionsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransactionsGetUnconfirmedTransactionResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransactionsGetUnconfirmedTransactionsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportListBroadcastPeersResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      peers:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/Peer'
+
+  TransportCommonBlockResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportGetBlockResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportGetBlocksResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportGetTransactionsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportAddTransactionsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportTransactionsFromIdsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+
+  TransportHeightResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      height:
+        type: integer
+        description: ''
+      header:
+        type: array
+        description: ''
+        items:
+          id:
+            type: integer
+            description: ''
+          height:
+            type: integer
+            description: ''
+          version:
+            type: integer
+            description: ''
+          totalAmount:
+            type: integer
+            description: ''
+          totalFee:
+            type: integer
+            description: ''
+          reward:
+            type: integer
+            description: ''
+          payloadHash:
+            type: string
+            description: ''
+          payloadLength:
+            type: integer
+            description: ''
+          timestamp:
+            type: integer
+            description: ''
+          numberOfTransactions:
+            type: integer
+            description: ''
+          previousBlock:
+            type: integer
+            description: ''
+          generatorPublicKey:
+            type: string
+            description: ''
+          blockSignature:
+            type: string
+            description: ''
+
+  TransportStatusResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      height:
+        type: integer
+        description: ''
+      forgingAllowed:
+        type: boolean
+        description: ''
+      currentSlot:
+        type: integer
+        description: ''
+      header:
+        type: array
+        description: ''
+        $ref: '#/definitions/TransportPeerHeader'
+
+####################################################################################################
+## Model Object Definitions ########################################################################
+####################################################################################################
+
+  Account:
+    type: object
+    properties:
+      address:
+        type: string
+        description: ''
+      unconfirmedBalance:
+        type: integer
+        description: ''
+      balance:
+        type: integer
+        description: ''
+      publicKey:
+        type: string
+        description: ''
+      unconfirmedSignature:
+        type: integer
+        description: ''
+      secondSignature:
+        type: integer
+        description: ''
+      secondPublicKey:
+        type: string
+        description: ''
+      multisignatures:
+        type: array
+        description: ''
+      u_multisignatures:
+        type: array
+        description: ''
+
+  TopAccount:
+    type: object
+    properties:
+      address:
+        type: string
+        description: ''
+      balance:
+        type: integer
+        description: ''
+      publicKey:
+        type: string
+        description: ''
+
+  Delegate:
+    type: object
+    properties:
+      username:
+        type: string
+        description: ''
+      address:
+        type: string
+        description: ''
+      publicKey:
+        type: string
+        description: ''
+      vote:
+        type: string
+        description: ''
+      producedblocks:
+        type: integer
+        description: ''
+      missedblocks:
+        type: integer
+        description: ''
+      rate:
+        type: integer
+        description: ''
+      approval:
+        type: number
+        description: ''
+      productivity:
+        type: number
+        description: ''
+
+  Block:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: ''
+      version:
+        type: integer
+        description: ''
+      timestamp:
+        type: integer
+        description: ''
+      height:
+        type: integer
+        description: ''
+      previousBlock:
+        type: integer
+        description: ''
+      numberOfTransactions:
+        type: integer
+        description: ''
+      totalAmount:
+        type: integer
+        description: ''
+      totalFee:
+        type: integer
+        description: ''
+      reward:
+        type: integer
+        description: ''
+      payloadLength:
+        type: integer
+        description: ''
+      payloadHash:
+        type: string
+        description: ''
+      generatorPublicKey:
+        type: string
+        description: ''
+      generatorId:
+        type: string
+        description: ''
+      blockSignature:
+        type: string
+        description: ''
+      confirmations:
+        type: integer
+        description: ''
+      totalForged:
+        type: integer
+        description: ''
+
+  DelegateSearchResult:
+    type: object
+    properties:
+      username:
+        type: string
+        description: ''
+      address:
+        type: string
+        description: ''
+      publicKey:
+        type: string
+        description: ''
+      vote:
+        type: integer
+        description: ''
+      producedblocks:
+        type: integer
+        description: ''
+      missedblocks:
+        type: integer
+        description: ''
+
+  Voter:
+    type: object
+    properties:
+      username:
+        type: string
+        description: ''
+      address:
+        type: string
+        description: ''
+      publicKey:
+        type: string
+        description: ''
+      balance:
+        type: integer
+        description: ''
+
+  Network:
+    type: object
+    properties:
+      nethash:
+        type: string
+        description: ''
+      token:
+        type: string
+        description: ''
+      symbol:
+        type: string
+        description: ''
+      explorer:
+        type: string
+        description: ''
+      version:
+        type: integer
+        description: ''
+
+  Peer:
+    type: object
+    properties:
+      ip:
+        type: string
+        description: ''
+      port:
+        type: integer
+        description: ''
+      version:
+        type: string
+        description: ''
+      errors:
+        type: integer
+        description: ''
+      os:
+        type: string
+        description: ''
+      height:
+        type: string
+        description: ''
+      status:
+        type: string
+        description: ''
+      delay:
+        type: integer
+        description: ''
+
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: ''
+      blockid:
+        type: integer
+        description: ''
+      type:
+        type: integer
+        description: ''
+      timestamp:
+        type: integer
+        description: ''
+      amount:
+        type: integer
+        description: ''
+      fee:
+        type: integer
+        description: ''
+      senderId:
+        type: string
+        description: ''
+      recipientId:
+        type: string
+        description: ''
+      senderPublicKey:
+        type: string
+        description: ''
+      signature:
+        type: string
+        description: ''
+      asset:
+        type: object
+        description: ''
+      confirmations:
+        type: integer
+        description: ''
+
+  TransportPeerHeader:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: ''
+      height:
+        type: integer
+        description: ''
+      version:
+        type: integer
+        description: ''
+      totalAmount:
+        type: integer
+        description: ''
+      totalFee:
+        type: integer
+        description: ''
+      reward:
+        type: integer
+        description: ''
+      payloadHash:
+        type: string
+        description: ''
+      payloadLength:
+        type: integer
+        description: ''
+      timestamp:
+        type: integer
+        description: ''
+      numberOfTransactions:
+        type: integer
+        description: ''
+      previousBlock:
+        type: integer
+        description: ''
+      generatorPublicKey:
+        type: string
+        description: ''
+      blockSignature:
+        type: string
+        description: ''
+
+  Error:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: 'Indicates whether or not errors occurred'
+      error:
+        type: string
+        description: ''
