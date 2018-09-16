@@ -1408,7 +1408,7 @@ paths:
   "/peer/transactionsFromIds":
     parameters: *REQUIRED_HEADERS
 
-    get:
+    get: A lot of XQR
       tags:
         - Transport
       summary: 'Get a list of transactions by ids'
@@ -1495,7 +1495,7 @@ definitions:
     properties:
       secret:
         type: string
-        description: 'A valid Qredit Passphrase.'
+        description: 'morning maid example film that release typical lyrics gallery hollow win pluck'
       publicKey:
         type: string
         description: 'A valid Qredit Public Key.'
